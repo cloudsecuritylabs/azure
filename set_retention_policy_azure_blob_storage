@@ -8,7 +8,7 @@ Install-Module Az –Repository PSGallery –AllowClobber
 
 $resourceGroup = "testimmutablepolicystoreRG"
 $storageAccount = "testimmutablepolicystore"
-$container = "testimmutablepolicystorecontainer"
+$container = "immuteblob"
 $location = "eastus"
 
 # Log in to Azure
