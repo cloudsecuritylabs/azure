@@ -1,0 +1,44 @@
+az group create --name myResourceGroup --location eastus
+az vm create \
+    --resource-group myResourceGroup \
+    --name myVM \
+    --image Oracle:Oracle-Database-Ee:12.1.0.2:latest \
+    --size Standard_DS2_v2 \
+    --admin-username azureuser \
+    --generate-ssh-keys
+    
+#connect to server
+$ sudo -su oracle
+$ lsnrctl start
+mkdir /u01/app/oracle/oradata
+
+dbca -silent \
+       -createDatabase \
+       -templateName General_Purpose.dbc \
+       -gdbname cdb1 \
+       -sid cdb1 \
+       -responseFile NO_VALUE \
+       -characterSet AL32UTF8 \
+       -sysPassword OraPasswd1 \
+       -systemPassword OraPasswd1 \
+       -createAsContainerDatabase true \
+       -numberOfPDBs 1 \
+       -pdbName pdb1 \
+       -pdbAdminPassword OraPasswd1 \
+       -databaseType MULTIPURPOSE \
+       -automaticMemoryManagement false \
+       -storageType FS \
+       -datafileDestination "/u01/app/oracle/oradata/"
+       -ignorePreReqs
+       
+ORACLE_SID=cdb1; export ORACLE_SID
+    
+~/.bashrc
+# Add ORACLE_SID. 
+export ORACLE_SID=cdb1
+
+
+sqlplus / as sysdba
+exec DBMS_XDB_CONFIG.SETHTTPSPORT(5502);
+
+select con_id, name, open_mode from v$pdbs;
